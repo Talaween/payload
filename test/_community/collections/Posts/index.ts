@@ -21,5 +21,23 @@ export const PostsCollection: CollectionConfig = {
         features: ({ defaultFeatures }) => [...defaultFeatures],
       }),
     },
+    {
+      name: 'favedBy',
+      type: 'relationship',
+      relationTo: 'users',
+      hasMany: true,
+      admin: {
+        description: 'Users who have favorited this tool',
+      },
+      hooks: {
+        afterRead: [
+          ({ value, req }) => {
+            console.log('user:', req.user) //always print 'null' even when user is logged in
+
+            return value?.filter((id: string) => id === req.user?.id) //this logic will not work as user is always null
+          },
+        ],
+      },
+    },
   ],
 }
